@@ -1,135 +1,131 @@
-function inicializacionMatriz (){
+//Create Matrix 3d for sudoku and posibilities for each position
+function createMatrix3D (matriz){
 
-    sudokuMatriz[0][0][0] = 2;
-    sudokuMatriz[0][1][0] = 5;
-    sudokuMatriz[0][2][0] = 7;
-    sudokuMatriz[0][3][0] = 4;
-    sudokuMatriz[0][4][0] = 0;
-    sudokuMatriz[0][5][0] = 0;
-    sudokuMatriz[0][6][0] = 0;
-    sudokuMatriz[0][7][0] = 6;
-    sudokuMatriz[0][8][0] = 9;
-    
-    sudokuMatriz[1][0][0] = 6;
-    sudokuMatriz[1][1][0] = 0;
-    sudokuMatriz[1][2][0] = 1;
-    sudokuMatriz[1][3][0] = 2;
-    sudokuMatriz[1][4][0] = 0;
-    sudokuMatriz[1][5][0] = 0;
-    sudokuMatriz[1][6][0] = 7;
-    sudokuMatriz[1][7][0] = 0;
-    sudokuMatriz[1][8][0] = 0;
+    for (let i=0; i<9; i++){
+        
+        matriz[i] = new Array;
+        
+        for (let j=0; j<9; j++){
+            matriz [i][j] = new Array;
+        }
+    }   
 
-    sudokuMatriz[2][0][0] = 0;
-    sudokuMatriz[2][1][0] = 0;
-    sudokuMatriz[2][2][0] = 8;
-    sudokuMatriz[2][3][0] = 9;
-    sudokuMatriz[2][4][0] = 0;
-    sudokuMatriz[2][5][0] = 0;
-    sudokuMatriz[2][6][0] = 0;
-    sudokuMatriz[2][7][0] = 0;
-    sudokuMatriz[2][8][0] = 5;
-
-    sudokuMatriz[3][0][0] = 4;
-    sudokuMatriz[3][1][0] = 0;
-    sudokuMatriz[3][2][0] = 0;
-    sudokuMatriz[3][3][0] = 8;
-    sudokuMatriz[3][4][0] = 0;
-    sudokuMatriz[3][5][0] = 7;
-    sudokuMatriz[3][6][0] = 0;
-    sudokuMatriz[3][7][0] = 2;
-    sudokuMatriz[3][8][0] = 1;
-
-    sudokuMatriz[4][0][0] = 0;
-    sudokuMatriz[4][1][0] = 0;
-    sudokuMatriz[4][2][0] = 0;
-    sudokuMatriz[4][3][0] = 6;
-    sudokuMatriz[4][4][0] = 3;
-    sudokuMatriz[4][5][0] = 4;
-    sudokuMatriz[4][6][0] = 9;
-    sudokuMatriz[4][7][0] = 7;
-    sudokuMatriz[4][8][0] = 8;
-
-    sudokuMatriz[5][0][0] = 7;
-    sudokuMatriz[5][1][0] = 0;
-    sudokuMatriz[5][2][0] = 9;
-    sudokuMatriz[5][3][0] = 5;
-    sudokuMatriz[5][4][0] = 0;
-    sudokuMatriz[5][5][0] = 2;
-    sudokuMatriz[5][6][0] = 4;
-    sudokuMatriz[5][7][0] = 0;
-    sudokuMatriz[5][8][0] = 6;
-
-    sudokuMatriz[6][0][0] = 0;
-    sudokuMatriz[6][1][0] = 0;
-    sudokuMatriz[6][2][0] = 0;
-    sudokuMatriz[6][3][0] = 0;
-    sudokuMatriz[6][4][0] = 0;
-    sudokuMatriz[6][5][0] = 0;
-    sudokuMatriz[6][6][0] = 0;
-    sudokuMatriz[6][7][0] = 5;
-    sudokuMatriz[6][8][0] = 2;
-
-    sudokuMatriz[7][0][0] = 0;
-    sudokuMatriz[7][1][0] = 0;
-    sudokuMatriz[7][2][0] = 0;
-    sudokuMatriz[7][3][0] = 0;
-    sudokuMatriz[7][4][0] = 0;
-    sudokuMatriz[7][5][0] = 0;
-    sudokuMatriz[7][6][0] = 1;
-    sudokuMatriz[7][7][0] = 9;
-    sudokuMatriz[7][8][0] = 7;
-
-    sudokuMatriz[8][0][0] = 9;
-    sudokuMatriz[8][1][0] = 0;
-    sudokuMatriz[8][2][0] = 0;
-    sudokuMatriz[8][3][0] = 7;
-    sudokuMatriz[8][4][0] = 0;
-    sudokuMatriz[8][5][0] = 5;
-    sudokuMatriz[8][6][0] = 0;
-    sudokuMatriz[8][7][0] = 0;
-    sudokuMatriz[8][8][0] = 0;
-
-    
+    return matriz;
 }
 
 
-function imprimirMatriz (){
+function verifMatrix (matriz) {
+
+    let verif;
+
+    for (let i=0; i<9; i++){
+        for (let j=0; j<9; j++){
+            if ( matriz [i][j][0] === undefined){
+                matriz [i][j][0] = 0;
+            }
+            else if (isNaN( matriz [i][j][0])) {
+                verif = false;
+                j = 10;
+                i = 10;
+            }
+            else if (matriz [i][j][0] < 0 || matriz [i][j][0] > 9){
+                verif = false;
+            }
+        }
+    }
+
+    return verif;
+}
+
+
+
+//Print matrix
+function printMatrix (){
 
     for (var i = 0; i < 9; i++){        
 
         for (var j = 0; j < 9; j++){
             
-            matrizImprimir[i][j] = document.getElementById(String(i)+"-"+String(j));
+            matrPrint[i][j] = document.getElementById(String(i)+"-"+String(j));
     
-            matrizImprimir[i][j].innerText = parseInt(sudokuMatriz[i][j][0]);            
+            matrPrint[i][j].innerText = parseInt(sudoku[i][j][0]);            
         }
     }    
 }
 
 
 
-var sudokuMatriz = new Array(9);
-var matrizImprimir = new Array(9);
 
-//Creacion matriz principal de 9x9x10
-for (var i = 0; i < sudokuMatriz.length; i++){
-    
-    sudokuMatriz[i] = new Array(9);
 
-    for (var j = 0; j < sudokuMatriz.length; j++){
 
-        sudokuMatriz[i][j] = new Array(10);
-    }
+
+///////////////////////
+///////////////////////
+
+let sudoku = new Array;
+let verificacion;
+let matrPrint = new Array(9);
+
+//Create matrix for print 9x9
+for (var i = 0; i < matrPrint.length; i++){
+
+    matrPrint[i] = new Array(9);
 }
 
-//Creacion matriz para imprimir en pantalla de 9x9
-for (var i = 0; i < matrizImprimir.length; i++){
+createMatrix3D(sudoku);
+temp(sudoku);
+verificacion = verifMatrix(sudoku);
 
-    matrizImprimir[i] = new Array(9);
+if (verificacion === false){
+    console.log("No es posible resolverlo");
+}
+else {
+    console.log("Ni idea");
 }
 
-inicializacionMatriz();
+printMatrix();
 
-imprimirMatriz();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+function temp(sudoku){
+    sudoku [0][0][0] = 4;
+    sudoku [0][4][0] = 2;
+    sudoku [0][5][0] = 8;
+    sudoku [0][6][0] = 1;
+    sudoku [1][2][0] = 8;
+    sudoku [1][3][0] = 3;
+    sudoku [1][5][0] = 4;
+    sudoku [1][7][0] = 9;
+    sudoku [2][7][0] = 7;
+    sudoku [2][8][0] = 8;
+    sudoku [3][1][0] = 2;
+    sudoku [3][3][0] = 4;
+    sudoku [4][0][0] = 3;
+    sudoku [4][1][0] = 5;
+    sudoku [4][7][0] = 2;
+    sudoku [4][8][0] = 9;
+    sudoku [5][5][0] = 2;
+    sudoku [5][7][0] = 8;
+    sudoku [6][0][0] = 5;
+    sudoku [6][1][0] = 8;
+    sudoku [7][1][0] = 7;
+    sudoku [7][3][0] = 2;
+    sudoku [7][5][0] = 1;
+    sudoku [7][6][0] = 8;
+    sudoku [8][2][0] = 3;
+    sudoku [8][3][0] = 6;
+    sudoku [8][4][0] = 8;
+    sudoku [8][8][0] = 1;
+}
