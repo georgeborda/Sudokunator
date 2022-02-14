@@ -13,10 +13,10 @@ function createMatrix3D (matriz){
     return matriz;
 }
 
-
+//Quick test to check wrong data
 function verifMatrix (matriz) {
 
-    let verif;
+    let verif = true;
 
     for (let i=0; i<9; i++){
         for (let j=0; j<9; j++){
@@ -54,16 +54,73 @@ function printMatrix (){
 }
 
 
+//Check the alternatives for each position
+function checkOptions (){
 
+    let findAnyNumber = false;
+    let existNumber;
+    
+    do {
+        for (let i=0; i<9; i++){
+            for (let j=0; j<9; j++){
+                if (sudoku[i][j][0] == 0){
+                    for (let checkedNumber=1; checkedNumber<10; checkedNumber++){
+                        existNumber = checkRow(checkedNumber,i);
+                        if (existNumber == false){
+                            existNumber = checkColumn(checkedNumber,j);
+                        }
+                        if (existNumber == false){
+                            existNumber = checkBox(checkedNumber,i,j);
+                        } 
+                    }
+                }             
+            }
+        } 
+    } while (findAnyNumber);
+}
 
+function checkRow (checkNumber,row){
+    let checkExistRow = false;
+    for (let j=0; j < 9; j++){
+        if (sudoku [row][j][0] == checkNumber){
+            checkExistRow = true;;
+        } 
+    }   
+    return checkExistRow; 
+}
+
+function checkColumn (checkNumber,column){
+    let checkExistColumn = false;
+    for (let i=0; i < 9; i++){
+        if (sudoku [i][column][0] == checkNumber){
+            checkExistColumn = true;;
+        } 
+    }   
+    return checkExistColumn; 
+}
+
+function checkBox (checkNumber, row, column){
+    let checkExistBox = false;
+    let boxRow = Math.floor(row/3) * 3;
+    let boxColumn = Math.floor(column/3) * 3;
+
+    for (let i=boxRow; i < boxRow+3; i++){
+        for (let j=boxColumn; j < boxColumn+3; j++){
+            if (sudoku [i][j][0] == checkNumber){
+                checkExistBox = true;;
+            }
+        } 
+    }   
+    return checkExistBox; 
+}
 
 
 
 ///////////////////////
 ///////////////////////
 
-let sudoku = new Array;
-let verificacion;
+var sudoku = new Array;
+let verification;
 let matrPrint = new Array(9);
 
 //Create matrix for print 9x9
@@ -74,14 +131,20 @@ for (var i = 0; i < matrPrint.length; i++){
 
 createMatrix3D(sudoku);
 temp(sudoku);
-verificacion = verifMatrix(sudoku);
+verification = verifMatrix(sudoku);
 
-if (verificacion === false){
+
+if (verification === false){
     console.log("No es posible resolverlo");
 }
-else {
-    console.log("Ni idea");
+else if (verification === true) {
+    console.log("Tal vez");
 }
+else {
+    console.log("Error");
+}
+
+
 
 printMatrix();
 
