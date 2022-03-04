@@ -54,51 +54,48 @@ function printMatrix (){
 }
 
 
-//Check the alternatives for each position
-function checkOptions (){
+//Check the alternatives for each position and push the options to Sudoku array
+function checkAlternatives (){
 
-    let findAnyNumber = false;
     let existNumber;
     
-    do {
         for (let i=0; i<9; i++){
             for (let j=0; j<9; j++){
                 if (sudoku[i][j][0] == 0){
                     for (let checkedNumber=1; checkedNumber<10; checkedNumber++){
                         existNumber = checkRow(checkedNumber,i);
-                        if (existNumber == false){
-                            existNumber = checkColumn(checkedNumber,j);
-                        }
-                        if (existNumber == false){
-                            existNumber = checkBox(checkedNumber,i,j);
-                        } 
+                        (existNumber == false) ? existNumber = checkColumn(checkedNumber,j) : 0;
+                        (existNumber == false) ? existNumber = checkBox(checkedNumber,i,j) : 0;
+                        (existNumber == false) ? sudoku[i][j].push(checkedNumber) : 0 ; 
                     }
                 }             
             }
         } 
-    } while (findAnyNumber);
-}
+    }
 
+//Check if the number exists in the row
 function checkRow (checkNumber,row){
     let checkExistRow = false;
     for (let j=0; j < 9; j++){
         if (sudoku [row][j][0] == checkNumber){
-            checkExistRow = true;;
+            checkExistRow = true;
         } 
     }   
     return checkExistRow; 
 }
 
+//Check if the number exists in the column
 function checkColumn (checkNumber,column){
     let checkExistColumn = false;
     for (let i=0; i < 9; i++){
         if (sudoku [i][column][0] == checkNumber){
-            checkExistColumn = true;;
+            checkExistColumn = true;
         } 
     }   
     return checkExistColumn; 
 }
 
+//Check if the number exists in the 3x3 box
 function checkBox (checkNumber, row, column){
     let checkExistBox = false;
     let boxRow = Math.floor(row/3) * 3;
@@ -107,13 +104,62 @@ function checkBox (checkNumber, row, column){
     for (let i=boxRow; i < boxRow+3; i++){
         for (let j=boxColumn; j < boxColumn+3; j++){
             if (sudoku [i][j][0] == checkNumber){
-                checkExistBox = true;;
+                checkExistBox = true;
             }
         } 
     }   
     return checkExistBox; 
 }
 
+//REVISAR, ESTE TRAMO SIRVE PARA ASIGNAR LOS VALORES QUE ESTAN COMO UNICA OPCION Y ELIMINAR ESTE NUMERO COMO OPCION DE LOS OTROS
+function checkOnlyOption () {
+    let finded = false;
+    
+    for (let i=0; i<9; i++){
+        for (let j=0; j<9; j++){
+            let prueba = 0;
+            if (sudoku[i][j].length == 2) {
+                finded = true;
+                sudoku[i][j].shift();
+                removeFoundOptions(sudoku[i][j][0], i, j);
+            } 
+        }
+        
+    }   
+    (finded == true) ? checkOnlyOption() : 0 ;
+    return finded;
+}
+
+
+function removeFoundOptions (foundNumber, row, column) {
+    let boxRow = Math.floor(row/3) * 3;
+    let boxColumn = Math.floor(column/3) * 3;
+    let rowRelative = row - boxRow; //Row relative posicion with respect to the box
+    let columnRelative = column - boxColumn; //Column relative posicion with respect to the box
+    let posRelative =  rowRelative * 3 + columnRelative;  //[[0,1,2],[3,4,5],[6,7,8]] Relative position
+        // if posRelative = 5, the rowRelative is 1 and columnRelative is 2 ---> [1,2]
+
+    for (let i=0; i<9; i++){
+        const found = (element) => element == foundNumber; //compare the found number with the check number
+        
+        //delete the options for rows
+        if (i !== column && sudoku[row][i].includes(foundNumber)){ 
+            sudoku[row][i].splice(sudoku[row][i].findIndex(found), 1);
+        }
+
+        //delete the options for columns
+        if (i !== row && sudoku[i][column].includes(foundNumber)){ 
+            sudoku[i][column].splice(sudoku[i][column].findIndex(found), 1);
+        } 
+        
+        //delete the options for the box
+        if (i !== posRelative && sudoku[boxRow + Math.floor(i/3)][boxColumn + i - Math.floor(i/3)*3].includes(foundNumber)){
+            sudoku[boxRow + Math.floor(i/3)][boxColumn + i - Math.floor(i/3)*3].
+            splice(sudoku[boxRow + Math.floor(i/3)][boxColumn + i - Math.floor(i/3)*3].findIndex(found), 1);
+        }
+
+    }
+}
 
 
 ///////////////////////
@@ -133,18 +179,10 @@ createMatrix3D(sudoku);
 temp(sudoku);
 verification = verifMatrix(sudoku);
 
-
-if (verification === false){
-    console.log("No es posible resolverlo");
+if (verification === true) {
+    checkAlternatives();
+    checkOnlyOption();
 }
-else if (verification === true) {
-    console.log("Tal vez");
-}
-else {
-    console.log("Error");
-}
-
-
 
 printMatrix();
 
@@ -163,32 +201,42 @@ printMatrix();
 
 
 function temp(sudoku){
-    sudoku [0][0][0] = 4;
-    sudoku [0][4][0] = 2;
-    sudoku [0][5][0] = 8;
-    sudoku [0][6][0] = 1;
-    sudoku [1][2][0] = 8;
-    sudoku [1][3][0] = 3;
-    sudoku [1][5][0] = 4;
-    sudoku [1][7][0] = 9;
-    sudoku [2][7][0] = 7;
-    sudoku [2][8][0] = 8;
-    sudoku [3][1][0] = 2;
-    sudoku [3][3][0] = 4;
-    sudoku [4][0][0] = 3;
-    sudoku [4][1][0] = 5;
-    sudoku [4][7][0] = 2;
-    sudoku [4][8][0] = 9;
+    sudoku [0][0][0] = 2;
+    sudoku [0][1][0] = 5;
+    sudoku [0][2][0] = 7;
+    sudoku [0][3][0] = 4;
+    sudoku [0][7][0] = 6;
+    sudoku [0][8][0] = 9;
+    sudoku [1][0][0] = 6;
+    sudoku [1][2][0] = 1;
+    sudoku [1][3][0] = 2;
+    sudoku [1][6][0] = 7;
+    sudoku [2][2][0] = 8;
+    sudoku [2][3][0] = 9;
+    sudoku [2][8][0] = 5;
+    sudoku [3][0][0] = 4;
+    sudoku [3][3][0] = 8;
+    sudoku [3][5][0] = 7;
+    sudoku [3][7][0] = 2;
+    sudoku [3][8][0] = 1;
+    sudoku [4][3][0] = 6;
+    sudoku [4][4][0] = 3;
+    sudoku [4][5][0] = 4;
+    sudoku [4][6][0] = 9;
+    sudoku [4][7][0] = 7;
+    sudoku [4][8][0] = 8;
+    sudoku [5][0][0] = 7;
+    sudoku [5][2][0] = 9;
+    sudoku [5][3][0] = 5;
     sudoku [5][5][0] = 2;
-    sudoku [5][7][0] = 8;
-    sudoku [6][0][0] = 5;
-    sudoku [6][1][0] = 8;
-    sudoku [7][1][0] = 7;
-    sudoku [7][3][0] = 2;
-    sudoku [7][5][0] = 1;
-    sudoku [7][6][0] = 8;
-    sudoku [8][2][0] = 3;
-    sudoku [8][3][0] = 6;
-    sudoku [8][4][0] = 8;
-    sudoku [8][8][0] = 1;
+    sudoku [5][6][0] = 4;
+    sudoku [5][8][0] = 6;
+    sudoku [6][7][0] = 5;
+    sudoku [6][8][0] = 2;
+    sudoku [7][6][0] = 1;
+    sudoku [7][7][0] = 9;
+    sudoku [7][8][0] = 7;
+    sudoku [8][0][0] = 9;
+    sudoku [8][3][0] = 7;
+    sudoku [8][5][0] = 5;
 }
